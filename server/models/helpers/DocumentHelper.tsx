@@ -509,39 +509,4 @@ export class DocumentHelper {
   }
 
   private static textSerializers = getTextSerializers(schema);
-
-  /**
-   * Generates breadcrumb information for a document
-   * 
-   * @param document The document to generate breadcrumbs for
-   * @returns A formatted breadcrumb string
-   */
-  static async getBreadcrumbString(document: Document): Promise<string> {
-    // Get the document's collection
-    const collection = await Collection.findByPk(document.collectionId);
-
-    if (!collection) {
-      return "";
-    }
-
-    // Start with the collection name
-    let breadcrumb = collection.name;
-
-    // If the document has a parentDocumentId, we need to build the path
-    if (document.parentDocumentId) {
-      // This would require traversing up the document hierarchy
-      // and building the path from parent documents
-      const parentDocument = await Document.findByPk(document.parentDocumentId);
-      if (parentDocument) {
-        // Recursively get the parent's breadcrumb
-        const parentBreadcrumb = await this.getBreadcrumbString(parentDocument);
-        breadcrumb = `${parentBreadcrumb} > ${document.title}`;
-      }
-    } else {
-      // Document is directly under the collection
-      breadcrumb = `${collection.name} > ${document.title}`;
-    }
-
-    return breadcrumb;
-  }
 }
